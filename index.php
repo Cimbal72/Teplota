@@ -9,7 +9,10 @@
 // Convert JSON to PHP array 
         $decode = new Decode();
         $phpObj = $decode->decodeJson(); 
-        
+if (!isset($phpObj)) {
+    echo "Nepodařilo se načíst data z Yahoo Wheater!!!";
+    exit;
+}
 // Uloží objekt do Db
         $save = new Save($phpObj);
         $save->save();
@@ -27,6 +30,7 @@
             $day[$i]->setDate($data['date']);
             $day[$i]->setAvTemp($data['avTemp']);
             $day[$i]->setDateInst($dateInst);
+            $day[$i]->setDateForm($day[$i]->getDateInst()->format("d-m"));
             $i=$i+1;
             }
             
@@ -38,22 +42,24 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    
     <title>Teploty v Praze</title>
+    
     <link rel="stylesheet" href="styl.css" type="text/css"/> 
+    
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script class="graf" type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
-
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-        ['Den','Teplota'],
-         <?php for($i=0;$i<=count($wheaterData)-1;$i++):?>[<?= $day[$i]->getDateInst()->format("d");?>,  
+        [{label:'Den',format:'string'},'Teplota'],
+        <?php for($i=0;$i<=count($wheaterData)-2;$i++):?>["<?= $day[$i]->getDateForm();?>",  
         <?= $day[$i]->getAvTemp();?>],<?php endfor;?>
-       [<?= $day[count($wheaterData)-1]->getDateInst()->format("d");?>, 
+       ["<?= $day[count($wheaterData)-1]->getDateForm();?>", 
         <?= $day[count($wheaterData)-1]->getAvTemp();?>]
         ]);
-
+      
         var options = {
           title: 'Průměrná teplota v Praze ve dnech <?= $day[0]->getDate();?> - <?= $day[count($wheaterData)-1]->getDate();?>',
           curveType: 'function',
@@ -65,6 +71,7 @@
         chart.draw(data, options);
       }
     </script>
+    
     <script type="text/javascript">
         function vyberDatum()
 {
@@ -78,20 +85,20 @@
     </head>
 
 <body> 
-<article>
-    <header>
-        <h1> Teploty v Praze</h1>
-    </header>
+    <article>
+        <header>
+            <h1> Teploty v Praze</h1>
+        </header>
    
            
 <!--Vytvoření seznamu datumů, výběr minimální a maximální teploty v daný den-->
     <fieldset>
         <label for="vyber">Vyber datum pro získání minimální a maximální teploty:</label><br>
         <select name="vyber" id="vyber" onchange="vyberDatum();">
-        <option value="">Vyberte datum</option>
-        <?php for($i=0;$i<=count($wheaterData)-1;$i++):?>
-        <option value="Minimální teplota: <?= $day[$i]->getLow();?>°C <br>Maximální teplota:<?= $day[$i]->getHigh();?>°C"><?= $day[$i]->getDate();?></option>
-        <?php endfor;?>
+            <option value="">Vyberte datum</option>
+            <?php for($i=0;$i<=count($wheaterData)-1;$i++):?>
+            <option value="Minimální teplota: <?= $day[$i]->getLow();?>°C <br>Maximální teplota:<?= $day[$i]->getHigh();?>°C"><?= $day[$i]->getDate();?></option>
+            <?php endfor;?>
         </select>
         
 <!--Místo vypsání max a min teploty-->
@@ -100,8 +107,8 @@
     </fieldset>
 
 <!--Místo zobrazení grafu-->
-        <figcaption id="curve_chart" >
-        </figcaption>
+    <figcaption id="curve_chart" >
+    </figcaption>
 
 <!--Logo Yahoo-->
         <img src="Foto/Yahoo.png" width="112.5" height="112.5" alt="Logo Yahoo"/>

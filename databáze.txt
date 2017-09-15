@@ -1,5 +1,6 @@
-Název: pocasi_db;
-Název tabulky: pocasi_praha;
+N�zev: pocasi_db;
+Tabulka: pocasi_praha;
+
 Sloupce:
 id - int(5) AI, primary key;
 date - date;

@@ -33,6 +33,10 @@ class Day {
         $this->dateInst = $dateInst;
     }
     
+    public function setDateForm($dateForm){
+        $this->dateForm = $dateForm;
+    }
+    
     public function setAvTemp($avTemp){
         $this->avTemp = $avTemp;
     }
@@ -59,5 +63,9 @@ class Day {
     
     public function getAvTemp(){
         return $this->avTemp;
+    }
+    
+    public function getDateForm(){
+        return $this->dateForm;
     }
 }
