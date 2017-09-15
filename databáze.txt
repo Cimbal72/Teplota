@@ -1,0 +1,5 @@
+Sloupce:
+id - int(5) AI, primary key;
+date - date;
+low - decimal(10,0);
+high - decimal(10,0);

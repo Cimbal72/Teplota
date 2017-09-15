@@ -1,0 +1,5 @@
+Instalac: 
+
+index.php, styl.css - koøenový adresáø;
+Save.php, Day.php, Db.php, Decode.php - adresáø Tridy;
+Yahoo.png, Prazsky_hrad-large.jpg;
